@@ -70,12 +70,10 @@ open class KtlintCheckTask @Inject constructor(
         get() = reporters.get()
             .map {
                 KtlintReport(
-                    objectFactory.property { set(it.isAvailable()) },
                     it,
                     newOutputFile().apply { set(it.getOutputFile()) }
                 )
             }
-            .filter { it.enabled.get() }
 
     init {
         if (project.hasProperty(FILTER_INCLUDE_PROPERTY_NAME)) {
@@ -157,9 +155,6 @@ open class KtlintCheckTask @Inject constructor(
             throw GradleException("Experimental rules are supported since 0.31.0 ktlint version.")
         }
     }
-
-    private fun ReporterType.isAvailable() =
-        SemVer.parse(ktlintVersion.get()) >= availableSinceVersion
 
     private fun ReporterType.getOutputFile() =
         project.layout.buildDirectory.file(project.provider {
